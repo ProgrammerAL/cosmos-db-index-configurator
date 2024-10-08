@@ -1,0 +1,1 @@
+# cosmos-db-index-configurator
