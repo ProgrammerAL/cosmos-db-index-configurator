@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\IndexMapper\IndexMapper\IndexMapper.csproj" />
+	  <ProjectReference Include="..\IndexMapper\IndexMapper.csproj" />
 	</ItemGroup>
 
 	  <!--When compiling, generate the nuget so this unit tests project references that instead of the project directly--> 

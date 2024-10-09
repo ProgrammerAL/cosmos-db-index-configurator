@@ -22,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\ClientLib\ClientLib.csproj" />
+	  <ProjectReference Include="../ClientLib/ClientLib.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
