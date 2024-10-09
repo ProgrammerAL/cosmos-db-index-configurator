@@ -25,8 +25,9 @@ public static class Program
 
 public class BuildContext : FrostingContext
 {
+    public const string BuildConfiguration = "Release";
+
     public string Target { get; }
-    public string BuildConfiguration { get; }
     public string SrcDirectoryPath { get; }
     public bool PushNuget { get; }
     public string NugetVersion { get; }
@@ -37,7 +38,6 @@ public class BuildContext : FrostingContext
         : base(context)
     {
         Target = context.Argument("target", "Default");
-        BuildConfiguration = LoadParameter(context, "configuration");
         SrcDirectoryPath = LoadParameter(context, "srcDirectoryPath");
         NugetVersion = LoadParameter(context, "nugetVersion");
         NuGetPushToken = LoadParameter(context, "nuGetPushToken");
@@ -59,7 +59,6 @@ public sealed class OutputParametersTask : FrostingTask<BuildContext>
     {
         context.Log.Information($"INFO: Current Working Directory: {context.Environment.WorkingDirectory}");
 
-        context.Log.Information($"INFO: {nameof(context.BuildConfiguration)}: {context.BuildConfiguration}");
         context.Log.Information($"INFO: {nameof(context.SrcDirectoryPath)}: {context.SrcDirectoryPath}");
     }
 }
@@ -83,7 +82,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
         context.DotNetBuild(pathToSln, new DotNetBuildSettings
         {
             NoRestore = true,
-            Configuration = context.BuildConfiguration
+            Configuration = BuildContext.BuildConfiguration
         });
     }
 
@@ -91,7 +90,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
     {
         var testSettings = new DotNetTestSettings()
         {
-            Configuration = context.BuildConfiguration,
+            Configuration = BuildContext.BuildConfiguration,
             NoBuild = true,
             ArgumentCustomization = (args) => args.Append("/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx")
         };
@@ -106,7 +105,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             IncludeSymbols = false,
             IncludeSource = true,
             NoBuild = true,
-            Configuration = context.BuildConfiguration,
+            Configuration = BuildContext.BuildConfiguration,
             OutputDirectory = nugetProj.OutDir,
             VersionSuffix = context.NugetVersion,
             ArgumentCustomization = (args) => args.Append($"-p:PackageVersion={context.NugetVersion}")

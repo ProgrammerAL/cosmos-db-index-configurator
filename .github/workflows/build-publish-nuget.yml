@@ -19,7 +19,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      CONFIGURATION: Release
       DOTNET_VERSION: 8.0.x
       SRC_DIRECTORY: ${{ github.workspace }}/src
       NUGET_VERSION: ${{ github.event.inputs.nuget_version_override || '0.1.0-preview' }}.${{ github.run_number }}
