@@ -29,4 +29,8 @@
 		<ProjectReference Include="..\IndexMapper\IndexMapper\IndexMapper.csproj" />
 	</ItemGroup>
 
+	  <!--When compiling, generate the nuget so this unit tests project references that instead of the project directly--> 
+    <Target Name="CreateNuget" BeforeTargets="CoreCompile">
+        <Exec Command="dotnet build ../ExampleLib/ExampleLib.csproj --configuration Release" />
+    </Target>
 </Project>

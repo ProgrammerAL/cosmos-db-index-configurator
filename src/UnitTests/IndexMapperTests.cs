@@ -22,7 +22,7 @@ public class IndexMapperTests
     public void WhenLoadingTypes()
     {
         var pwd = Directory.GetCurrentDirectory();
-        var resultPath = pwd + $"/ExampleLib.dll";
+        var resultPath = pwd + $"../../../../../ExampleLib/bin/Release/net8.0/ExampleLib.dll";
         var assembly = Assembly.LoadFrom(resultPath);
         var result = _mapper.MapIndexes(assembly);
 
