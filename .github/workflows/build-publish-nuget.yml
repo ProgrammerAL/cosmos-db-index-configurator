@@ -32,5 +32,5 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Cake Frosting Build and Push NuGet
-        run: dotnet run --project ${{ github.workspace }}/build/Build.csproj -- --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH_LIB }} --nugetVersion=${{ env.NUGET_VERSION }} --pushNuget=${{ env.PUSH_NUGET }} --nugetPushToken=${{ secrets.NUGET_PUSH_TOKEN }}
+        run: dotnet run --project ${{ github.workspace }}/build/Build.csproj -- --srcDirectoryPath=${{ env.SRC_DIRECTORY }} --nugetVersion=${{ env.NUGET_VERSION }} --pushNuget=${{ env.PUSH_NUGET }} --nugetPushToken=${{ secrets.NUGET_PUSH_TOKEN }}
 
