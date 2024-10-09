@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<RootNamespace>ProgrammerAl.CosmosDbIndexConfigurator.ConfigurationLib</RootNamespace>
-		<AssemblyName>ProgrammerAl.CosmosDbIndexConfigurator.ConfigurationLib</AssemblyName>
+		<RootNamespace>ProgrammerAl.CosmosDbIndexConfigurator.Attributes</RootNamespace>
+		<AssemblyName>ProgrammerAl.CosmosDbIndexConfigurator.Attributes</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup>
