@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>ProgrammerAl.CosmosDbIndexConfigurator.ConfigurationLib</RootNamespace>
+		<AssemblyName>ProgrammerAl.CosmosDbIndexConfigurator.ConfigurationLib</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>0.0.1</Version>
+		<PackageProjectUrl>https://github.com/ProgrammerAL/cosmos-db-index-configurator</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../../README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+</Project>

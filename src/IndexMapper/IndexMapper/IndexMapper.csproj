@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper</RootNamespace>
+	<AssemblyName>ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Version>0.0.1</Version>
+		<PackageProjectUrl>https://github.com/ProgrammerAL/cosmos-db-index-configurator</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="ProgrammerAl.SourceGenerators.PublicInterfaceGenerator" Version="1.0.0.62" PrivateAssets="all" />
+	  <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\ClientLib\ClientLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="../../README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+</Project>
