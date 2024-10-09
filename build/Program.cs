@@ -71,8 +71,8 @@ public sealed class BuildTask : FrostingTask<BuildContext>
     {
         BuildDotnetApp(context, context.ProjectPaths.PathToSln);
         TestDotnetApp(context, context.ProjectPaths.UnitTestsProject);
-        PublisNuget(context, context.ProjectPaths.ClientLibProject);
-        PublisNuget(context, context.ProjectPaths.IndexMapperProject);
+        PublishNuget(context, context.ProjectPaths.ClientLibProject);
+        PublishNuget(context, context.ProjectPaths.IndexMapperProject);
     }
 
     private void BuildDotnetApp(BuildContext context, string pathToSln)
@@ -98,7 +98,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
         context.DotNetTest(pathToUnitTestProj, testSettings);
     }
 
-    private void PublisNuget(BuildContext context, NugetProject nugetProj)
+    private void PublishNuget(BuildContext context, NugetProject nugetProj)
     {
         context.DotNetPack(nugetProj.CsProjFile, new Cake.Common.Tools.DotNet.Pack.DotNetPackSettings
         {
@@ -124,13 +124,13 @@ public sealed class NugetPushTask : FrostingTask<BuildContext>
             return;
         }
 
-        context.DotNetNuGetPush(context.ProjectPaths.ClientLibProject.NugetFilePath, new Cake.Common.Tools.DotNet.NuGet.Push.DotNetNuGetPushSettings
-        {
-            Source = "https://api.nuget.org/v3/index.json",
-            ApiKey = context.NuGetPushToken
-        });
+        PushNuget(context, context.ProjectPaths.ClientLibProject);
+        PushNuget(context, context.ProjectPaths.IndexMapperProject);
+    }
 
-        context.DotNetNuGetPush(context.ProjectPaths.IndexMapperProject.NugetFilePath, new Cake.Common.Tools.DotNet.NuGet.Push.DotNetNuGetPushSettings
+    private void PushNuget(BuildContext context, NugetProject nugetProject)
+    {
+        context.DotNetNuGetPush(nugetProject.NugetFilePath, new Cake.Common.Tools.DotNet.NuGet.Push.DotNetNuGetPushSettings
         {
             Source = "https://api.nuget.org/v3/index.json",
             ApiKey = context.NuGetPushToken
