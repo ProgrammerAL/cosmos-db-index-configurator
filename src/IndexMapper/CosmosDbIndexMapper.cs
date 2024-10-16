@@ -13,7 +13,7 @@ using ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper.PropertyMappers;
 namespace ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper;
 
 public record CosmosDbIndexMap(ImmutableArray<MappedIndexes> Indexes, ImmutableArray<AttributeLoadError> LoadErrors);
-public record AttributeLoadError(Type TypeErroredOn, Exception Exception);
+public record AttributeLoadError(string TypeErroredOn, Exception Exception);
 
 [GenerateInterface]
 public class CosmosDbIndexMapper : ICosmosDbIndexMapper
@@ -62,7 +62,7 @@ public class CosmosDbIndexMapper : ICosmosDbIndexMapper
             }
             catch (Exception ex)
             {
-                errorsBuilder.Add(new AttributeLoadError(type, ex));
+                errorsBuilder.Add(new AttributeLoadError(type.FullName, ex));
             }
         }
 
