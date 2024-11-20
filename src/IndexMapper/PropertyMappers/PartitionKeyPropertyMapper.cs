@@ -18,7 +18,8 @@ public class PartitionKeyPropertyMapper
             if (property.GetMethod is object
                 && !property.GetMethod.IsStatic)
             {
-                var includeIndexAttr = property.GetCustomAttribute<IncludePartitionKeyAttribute>();
+                var includeIndexAttrs = property.GetCustomAttributesData();
+                var includeIndexAttr = includeIndexAttrs.FirstOrDefault(x => string.Equals(x.AttributeType.Name, nameof(IncludePartitionKeyAttribute)));
                 if (includeIndexAttr is object)
                 {
                     return $"/{property.Name}";

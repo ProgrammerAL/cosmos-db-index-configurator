@@ -9,6 +9,8 @@ using ProgrammerAl.SourceGenerators.PublicInterfaceGenerator.Attributes;
 
 using ProgrammerAl.CosmosDbIndexConfigurator.ConfigurationLib;
 using ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper.PropertyMappers;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper;
 
@@ -21,8 +23,35 @@ public class CosmosDbIndexMapper : ICosmosDbIndexMapper
     private readonly IndexPropertyMapper _indexMapper = new IndexPropertyMapper();
     private readonly PartitionKeyPropertyMapper _partitionKeyMapper = new PartitionKeyPropertyMapper();
 
-    /// <param name="assembly">Assembly to load from</param>
-    public CosmosDbIndexMap MapIndexes(Assembly assembly)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="assemblyResolverPaths">Collection of paths that hold dll files to resolve from when loading assembly info. Note: The paths are to the directory that store dlls, not paths to individual dll files.</param>
+    /// <param name="assemblyPath">Path to the assembly file to interrogate</param>
+    public CosmosDbIndexMap MapIndexes(IEnumerable<string> assemblyResolverPaths, string assemblyPath)
+    {
+        var assembliesToResolve = new List<string>();
+        foreach (var path in assemblyResolverPaths)
+        {
+            var dirDlls = Directory.GetFiles(path, "*.dll");
+            assembliesToResolve.AddRange(dirDlls);
+        }
+
+        var runtimeDirectory = RuntimeEnvironment.GetRuntimeDirectory();
+        var runtimeDirDlls = Directory.GetFiles(runtimeDirectory, "*.dll");
+        assembliesToResolve.AddRange(runtimeDirDlls);
+
+        assembliesToResolve.Add(assemblyPath);
+
+        // Create PathAssemblyResolver that can resolve assemblies using the created list.
+        var resolver = new PathAssemblyResolver(assembliesToResolve);
+        var mlc = new MetadataLoadContext(resolver);
+        var assembly = mlc.LoadFromAssemblyPath(assemblyPath);
+
+        return MapIndexesFromAssembly(assembly);
+    }
+
+    private CosmosDbIndexMap MapIndexesFromAssembly(Assembly assembly)
     {
         var (typesWithIdsToMap, loadErrors) = LoadClassesWithIdsToMap(assembly);
         var mappedIndexes = LoadMappedIndexesFromDbSetProperties(typesWithIdsToMap);
@@ -50,14 +79,18 @@ public class CosmosDbIndexMapper : ICosmosDbIndexMapper
     {
         var mappedTypesBuilder = ImmutableArray.CreateBuilder<MappedType>();
         var errorsBuilder = ImmutableArray.CreateBuilder<AttributeLoadError>();
-        foreach (var type in assembly.ExportedTypes)
+
+        foreach (var type in assembly.DefinedTypes)
         {
             try
             {
-                var attr = type.GetCustomAttribute<IdConfiguredEntityAttribute>();
+                var customAttrData = type.GetCustomAttributesData();
+                var attr = customAttrData.FirstOrDefault(x => string.Equals(x.AttributeType.Name, nameof(IdConfiguredEntityAttribute)));
                 if (attr is object)
                 {
-                    mappedTypesBuilder.Add(new MappedType(type, attr.ContainerName));
+                    //We know the container name is the first argument to the attribute
+                    var containerName = attr.ConstructorArguments[0];
+                    mappedTypesBuilder.Add(new MappedType(type, containerName.Value.ToString()));
                 }
             }
             catch (Exception ex)

@@ -4,10 +4,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 
 using ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper;
+
 using Shouldly;
 
 using Xunit;
@@ -22,9 +25,12 @@ public class IndexMapperTests
     public void WhenLoadingTypes()
     {
         var pwd = Directory.GetCurrentDirectory();
-        var resultPath = pwd + $"../../../../../ExampleLib/bin/Release/net8.0/ExampleLib.dll";
-        var assembly = Assembly.LoadFrom(resultPath);
-        var result = _mapper.MapIndexes(assembly);
+        //var resultPath = pwd + $"../../../../../ExampleLib/bin/Release/net8.0/ExampleLib.dll";
+        var resultPath = @$"D:\GitHub\Purple-Spike\arcade-machine-management-services\src\ArcadeMachineManagementService\ServiceLogic\bin\Release\net9.0\PurpleSpikeProductions.ArcadeServices.Api.ArcadeMachineManagement.ServiceLogic.dll";
+
+        var result = _mapper.MapIndexes(
+            assemblyResolverPaths: new[] { "D:\\GitHub\\Purple-Spike\\arcade-machine-management-services\\src\\ArcadeMachineManagementService\\ArcadeMachineManagementService\\bin\\Release\\net9.0" },
+            assemblyPath: @"D:\GitHub\Purple-Spike\arcade-machine-management-services\src\ArcadeMachineManagementService\ArcadeMachineManagementService\bin\Release\net9.0\PurpleSpikeProductions.ArcadeServices.Api.ArcadeMachineManagement.ServiceLogic.dll");
 
         var mappedIndexes = result.Indexes;
         mappedIndexes.Length.ShouldBe(3);

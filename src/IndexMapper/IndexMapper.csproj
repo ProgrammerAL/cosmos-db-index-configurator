@@ -17,8 +17,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="ProgrammerAl.SourceGenerators.PublicInterfaceGenerator" Version="1.0.0.62" PrivateAssets="all" />
-	  <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+	  <PackageReference Include="ProgrammerAl.SourceGenerators.PublicInterfaceGenerator" Version="*" PrivateAssets="all" />
+	  <PackageReference Include="System.Collections.Immutable" Version="*" />
+	  <PackageReference Include="System.Reflection.MetadataLoadContext" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

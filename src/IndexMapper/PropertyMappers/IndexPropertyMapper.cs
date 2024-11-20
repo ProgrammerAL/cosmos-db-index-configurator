@@ -23,7 +23,8 @@ public class IndexPropertyMapper
             {
                 var propertyIndexPath = $"{indexPath}{property.Name}/";
 
-                var includeIndexAttr = property.GetCustomAttribute<IncludeIndexAttribute>();
+                var includeIndexAttrs = property.GetCustomAttributesData();
+                var includeIndexAttr = includeIndexAttrs.FirstOrDefault(x => string.Equals(x.AttributeType.Name, nameof(IncludeIndexAttribute)));
                 if (includeIndexAttr is object)
                 {
                     if (Utilities.IsPropertyScalar(property))
