@@ -6,7 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper;
-public static class Utilities
+
+/// <summary>
+/// Checks type info.
+/// We have to check based on known type names because the assemblies we're checking are loaded using reflection only
+/// This means if a type is loaded, for example String, that's not the same String type that's running in this code. It's in a different context.
+/// </summary>
+public static class TypeCheckUtilities
 {
     public static bool IsPropertyScalar(PropertyInfo property)
     {
@@ -26,4 +32,8 @@ public static class Utilities
                || property.PropertyType.Name == "TimeOnly";
     }
 
+    public static bool IsPropertyIgnored(PropertyInfo property)
+    {
+        return property.PropertyType.FullName == "System.Type";
+    }
 }

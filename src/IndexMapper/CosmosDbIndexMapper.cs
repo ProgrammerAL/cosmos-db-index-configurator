@@ -24,11 +24,17 @@ public class CosmosDbIndexMapper : ICosmosDbIndexMapper
     private readonly PartitionKeyPropertyMapper _partitionKeyMapper = new PartitionKeyPropertyMapper();
 
     /// <summary>
-    /// 
+    /// Scans the assembly at the provided path and maps the Cosmos DB indexes for all classes that have the `IdConfiguredEntityAttribute`
     /// </summary>
-    /// <param name="assemblyResolverPaths">Collection of paths that hold dll files to resolve from when loading assembly info. Note: The paths are to the directory that store dlls, not paths to individual dll files.</param>
     /// <param name="assemblyPath">Path to the assembly file to interrogate</param>
-    public CosmosDbIndexMap MapIndexes(IEnumerable<string> assemblyResolverPaths, string assemblyPath)
+    /// <param name="assemblyResolverPaths">
+    ///     Collection of paths that hold dll files to resolve from when loading assembly info. 
+    ///     In order to find all types and their attributes, the assembly resolver needs to be able to load all referenced assemblies.
+    ///     At a minimum, this should include the path to the compiled assembly that is being interrogated.
+    ///     If you are scanning a single assembly of an app, you're probably better off using the path to the full app to be sure it includes other referenced assemblies.
+    ///     Note: The paths are to the directory that store dlls, not paths to individual dll files.
+    /// </param>
+    public CosmosDbIndexMap MapIndexes(string assemblyPath, IEnumerable<string> assemblyResolverPaths)
     {
         var assembliesToResolve = new List<string>();
         foreach (var path in assemblyResolverPaths)
@@ -45,8 +51,8 @@ public class CosmosDbIndexMapper : ICosmosDbIndexMapper
 
         // Create PathAssemblyResolver that can resolve assemblies using the created list.
         var resolver = new PathAssemblyResolver(assembliesToResolve);
-        var mlc = new MetadataLoadContext(resolver);
-        var assembly = mlc.LoadFromAssemblyPath(assemblyPath);
+        var context = new MetadataLoadContext(resolver);
+        var assembly = context.LoadFromAssemblyPath(assemblyPath);
 
         return MapIndexesFromAssembly(assembly);
     }

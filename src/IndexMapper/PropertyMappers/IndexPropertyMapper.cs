@@ -12,13 +12,24 @@ namespace ProgrammerAl.CosmosDbIndexConfigurator.IndexMapper.PropertyMappers;
 
 public class IndexPropertyMapper
 {
+    private const int MaxDepthLimit = 50;
+
     public ImmutableArray<string> MapPropertiesWithAttribute(Type genericType, string indexPath)
     {
+        if (indexPath.Count(x => x == '/') > MaxDepthLimit)
+        {
+            return ImmutableArray<string>.Empty;
+        }
+
         var builder = ImmutableArray.CreateBuilder<string>();
 
         foreach (var property in genericType.GetRuntimeProperties())
         {
-            if (property.GetMethod is object
+            if (TypeCheckUtilities.IsPropertyIgnored(property))
+            {
+                continue;
+            }
+            else if (property.GetMethod is object
                 && !property.GetMethod.IsStatic)
             {
                 var propertyIndexPath = $"{indexPath}{property.Name}/";
@@ -27,7 +38,7 @@ public class IndexPropertyMapper
                 var includeIndexAttr = includeIndexAttrs.FirstOrDefault(x => string.Equals(x.AttributeType.Name, nameof(IncludeIndexAttribute)));
                 if (includeIndexAttr is object)
                 {
-                    if (Utilities.IsPropertyScalar(property))
+                    if (TypeCheckUtilities.IsPropertyScalar(property))
                     {
                         builder.Add($"{propertyIndexPath}?");
                     }
@@ -36,7 +47,7 @@ public class IndexPropertyMapper
                         builder.Add($"{propertyIndexPath}*");
                     }
                 }
-                else if (property.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+                else if (property.PropertyType.IsIEnumerableType())
                 {
                     if (property.PropertyType.IsGenericType)
                     {
@@ -60,7 +71,7 @@ public class IndexPropertyMapper
                 }
                 else if (property.PropertyType != typeof(object)
                     && property.PropertyType != typeof(Type)
-                    && !Utilities.IsPropertyScalar(property))
+                    && !TypeCheckUtilities.IsPropertyScalar(property))
                 {
                     var objectSubTypes = MapPropertiesWithAttribute(property.PropertyType, $"{propertyIndexPath}");
                     builder.AddRange(objectSubTypes);
